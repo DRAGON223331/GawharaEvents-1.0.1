@@ -70,6 +70,7 @@ public final class GawharaEvents extends JavaPlugin implements Listener, Command
 
     private static final class ActiveEvent {
         private final EventType type;
+        private final UUID id = UUID.randomUUID();
         private final long startedAt;
         private final long endsAt;
         private final Location center;
@@ -335,6 +336,32 @@ public final class GawharaEvents extends JavaPlugin implements Listener, Command
         }
     }
 
+    private long coinReward(EventType type) {
+        long fallback = switch (type) {
+            case KOTH -> 1L;
+            case TREASURE -> 2L;
+            case METEOR -> 3L;
+        };
+        return Math.max(0L, getConfig().getLong("coin-rewards." + type.key, fallback));
+    }
+
+    private boolean awardCoinsOnce(UUID playerId, long amount, String reason, String transactionKey) {
+        if (amount <= 0L) return true;
+        var coins = Bukkit.getPluginManager().getPlugin("GawharaCoins");
+        if (coins == null || !coins.isEnabled()) {
+            getLogger().warning("GawharaCoins is not installed/enabled; event GC reward was skipped.");
+            return false;
+        }
+        try {
+            Object result = coins.getClass().getMethod("awardCoinsOnce", UUID.class, long.class, String.class, String.class)
+                    .invoke(coins, playerId, amount, reason, transactionKey);
+            return Boolean.TRUE.equals(result);
+        } catch (ReflectiveOperationException ex) {
+            getLogger().log(java.util.logging.Level.SEVERE, "GawharaCoins API call failed", ex);
+            return false;
+        }
+    }
+
     private void finishEvent(Player winner, boolean timedOut) {
         if (activeEvent == null) return;
         ActiveEvent event = activeEvent;
@@ -343,17 +370,25 @@ public final class GawharaEvents extends JavaPlugin implements Listener, Command
         event.bossBar.removeAll();
 
         if (winner != null) {
-            double reward = Math.max(0.0, getConfig().getDouble("rewards." + event.type.key, 500.0));
-            EconomyResponse response = economy.depositPlayer(winner, reward);
-            if (response != null && response.transactionSuccess()) {
-                String msg = getConfig().getString("messages.winner", "&a%player% won &e%reward% &afrom %event%!");
-                broadcastRaw(msg.replace("%player%", winner.getName()).replace("%reward%", economy.format(reward)).replace("%event%", eventName(event.type)));
-                winner.playSound(winner.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
-            } else {
-                winner.sendMessage(color(getConfig().getString("messages.reward-error", "&cThe reward could not be deposited. Contact staff.")));
-                String reason = response == null ? "Vault returned no response" : response.errorMessage;
+            double cashReward = Math.max(0.0, getConfig().getDouble("rewards." + event.type.key, 500.0));
+            EconomyResponse cashResponse = economy.depositPlayer(winner, cashReward);
+            boolean cashPaid = cashResponse != null && cashResponse.transactionSuccess();
+            if (!cashPaid) {
+                String reason = cashResponse == null ? "Vault returned no response" : cashResponse.errorMessage;
                 getLogger().warning("Vault could not deposit the " + event.type.key + " reward for " + winner.getName() + ": " + reason);
             }
+
+            long gcReward = coinReward(event.type);
+            boolean gcPaid = awardCoinsOnce(winner.getUniqueId(), gcReward,
+                    "Event winner: " + event.type.key, "event:" + event.id);
+            String cashText = cashPaid ? economy.format(cashReward) : "cash payment failed";
+            String gcText = gcPaid && gcReward > 0 ? " &8| &e+" + gcReward + " GC" : "";
+            String msg = getConfig().getString("messages.winner", "&a%player% won &e%reward% &afrom %event%!");
+            broadcastRaw(msg.replace("%player%", winner.getName()).replace("%reward%", cashText)
+                    .replace("%event%", eventName(event.type)) + gcText);
+            if (!gcPaid) winner.sendMessage(color("&cYour event GC reward could not be saved. Please contact staff."));
+            if (!cashPaid) winner.sendMessage(color(getConfig().getString("messages.reward-error", "&cThe cash reward could not be deposited.")));
+            winner.playSound(winner.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
         } else if (timedOut) {
             broadcastRaw(getConfig().getString("messages.event-ended", "&c%event% ended. No winner this time.")
                     .replace("%event%", eventName(event.type)));
@@ -548,7 +583,8 @@ public final class GawharaEvents extends JavaPlugin implements Listener, Command
             boolean enabled = getConfig().getBoolean("events." + type.key + ".enabled", true);
             double reward = Math.max(0.0, getConfig().getDouble("rewards." + type.key, 0.0));
             String status = enabled ? "&aEnabled" : "&cDisabled";
-            sendRaw(sender, "&8• " + eventName(type) + " &8| " + status + " &8| &e" + economy.format(reward));
+            sendRaw(sender, "&8• " + eventName(type) + " &8| " + status + " &8| &e" + economy.format(reward)
+                    + " &8+ &b" + coinReward(type) + " GC");
         }
         if (activeEvent == null) {
             sendRaw(sender, "&7No event is running right now.");

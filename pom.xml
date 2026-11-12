@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.gawharasmp</groupId>
   <artifactId>GawharaEvents</artifactId>
-  <version>1.0.2</version>
+  <version>1.1.0</version>
   <name>GawharaEvents</name>
   <properties>
     <maven.compiler.release>25</maven.compiler.release>
@@ -24,7 +24,7 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>GawharaEvents-1.0.2</finalName>
+    <finalName>GawharaEvents-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.14.1</version>
