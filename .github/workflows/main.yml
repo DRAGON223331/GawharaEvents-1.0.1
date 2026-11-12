@@ -29,13 +29,13 @@ jobs:
         run: mvn --batch-mode --no-transfer-progress clean verify
       - name: Verify JAR contents
         run: |
-          test -f target/GawharaEvents-1.0.1.jar
-          jar tf target/GawharaEvents-1.0.1.jar | grep -F "com/gawharasmp/events/GawharaEvents.class"
-          jar tf target/GawharaEvents-1.0.1.jar | grep -F "plugin.yml"
+          test -f target/GawharaEvents-1.0.2.jar
+          jar tf target/GawharaEvents-1.0.2.jar | grep -F "com/gawharasmp/events/GawharaEvents.class"
+          jar tf target/GawharaEvents-1.0.2.jar | grep -F "plugin.yml"
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
-          name: GawharaEvents-1.0.1
-          path: target/GawharaEvents-1.0.1.jar
+          name: GawharaEvents-1.0.2
+          path: target/GawharaEvents-1.0.2.jar
           if-no-files-found: error
           retention-days: 14
