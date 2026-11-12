@@ -1,0 +1,21 @@
+name: GawharaEvents
+version: 1.0.1
+main: com.gawharasmp.events.GawharaEvents
+api-version: '1.20'
+author: GawharaSMP
+website: https://github.com/
+depend: [Vault]
+description: Automated KOTH, Treasure Hunt and Meteor events for GawharaSMP.
+commands:
+  gevents:
+    description: View and manage GawharaSMP events.
+    usage: /gevents [status|start|stop|setlocation|reload]
+    aliases: [events, event]
+    permission: gawharaevents.use
+permissions:
+  gawharaevents.use:
+    description: Allows players to view event information.
+    default: true
+  gawharaevents.admin:
+    description: Allows staff to manage server events.
+    default: op

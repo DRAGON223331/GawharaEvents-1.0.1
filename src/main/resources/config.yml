@@ -1,0 +1,90 @@
+# ===============================================
+# GawharaEvents - GawharaSMP
+# Paper 1.20.4+ | Java 17+ | Vault Economy
+# ===============================================
+
+settings:
+  prefix: '&8[&bGawharaEvents&8] &r'
+
+# Locations are set in-game with /gevents setlocation <type>.
+# For KOTH, stand at the center of the hill.
+# For Treasure/Meteor, stand at the area center; the plugin chooses a random safe spot nearby.
+locations:
+  koth:
+    world: ''
+    x: 0.5
+    y: 64.0
+    z: 0.5
+  treasure:
+    world: ''
+    x: 0.5
+    y: 64.0
+    z: 0.5
+  meteor:
+    world: ''
+    x: 0.5
+    y: 64.0
+    z: 0.5
+
+event-names:
+  koth: '&bKing of the Hill'
+  treasure: '&dTreasure Hunt'
+  meteor: '&6Meteor Drop'
+
+events:
+  koth:
+    enabled: true
+    duration-seconds: 600
+    radius: 7.0
+    capture-seconds: 60
+  treasure:
+    enabled: true
+    duration-seconds: 480
+    search-radius: 250
+    hint-interval-seconds: 45
+  meteor:
+    enabled: true
+    duration-seconds: 420
+    search-radius: 180
+
+rewards:
+  koth: 750.0
+  treasure: 1000.0
+  meteor: 1500.0
+
+# Disabled by default so the server owner can set event locations first.
+auto-events:
+  enabled: false
+  first-delay-seconds: 900
+  interval-seconds: 10800
+  types:
+    - koth
+    - treasure
+    - meteor
+
+bossbar:
+  start-title: '&b&lGAWHARA EVENTS &8» &fAn event is live!'
+  koth-title: '&b&lKOTH &8» &f%player% &8| &e%progress%%'
+  koth-empty: '&b&lKING OF THE HILL &8» &fStand in the capture zone'
+  koth-contested: '&c&lKOTH CONTESTED &8» &fClear the hill to capture it'
+  cache-title: '&b&lGAWHARA EVENT &8» &f%event% &8| &e%time%s'
+
+messages:
+  no-permission: '&cYou do not have permission.'
+  already-running: '&cAn event is already running: &f%event%&c.'
+  event-disabled: '&cThe &f%event% &cevent is disabled in the configuration.'
+  location-not-set: '&cLocation for &f%event% &cis not set. Use /gevents setlocation %event%.'
+  no-safe-location: '&cCould not find a safe location for the event cache. Try another location or radius.'
+  no-event: '&7There is currently no active event.'
+  status: '&bActive event: &f%event% &8| &bTime left: &f%time%s'
+  event-subtitle: '&7Use &b/gevents &7to view event information.'
+  koth-start: '&b&lKOTH! &fCapture the hill and hold it for the required time!'
+  treasure-start: '&d&lTREASURE HUNT! &fA hidden chest has appeared. Follow the clues!'
+  meteor-start: '&6&lMETEOR INCOMING! &fA meteor is falling near &e%world% &7at X: &e%x% &7Z: &e%z%&f!'
+  treasure-hint: '&dTreasure clue: &f%world% &7near X: &e%x% &7Z: &e%z%'
+  koth-started: '&b%player% &7is capturing the hill!'
+  winner: '&a&lEVENT WINNER! &f%player% &awon &e%reward% &afrom %event%&a!'
+  event-ended: '&c%event% ended. No winner this time.'
+  stopped: '&c%event% was stopped by staff.'
+  reward-error: '&cThe reward could not be deposited. Contact staff.'
+  cache-protected: '&eRight-click the event chest to claim the reward.'

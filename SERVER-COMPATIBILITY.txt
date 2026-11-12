@@ -1,0 +1,4 @@
+Server target: Paper 26.3.build.170-beta
+Compiler target: Java 25
+Build: mvn -B clean verify
+Artifact: target/GawharaEvents-1.0.1.jar
