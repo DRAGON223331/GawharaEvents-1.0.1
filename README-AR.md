@@ -1,4 +1,4 @@
-# GawharaEvents 1.0.1
+# GawharaEvents 1.0.2
 
 بلجن فعاليات مستقل لسيرفر GawharaSMP، مبني لـ Paper 26.3+ وJava 25+، ويستخدم Vault Economy لصرف الجوائز.
 
@@ -33,7 +33,7 @@
 
 ## التثبيت
 
-1. ضع `GawharaEvents-1.0.1.jar` داخل `plugins`.
+1. ضع `GawharaEvents-1.0.2.jar` داخل `plugins`.
 2. تأكد من وجود Vault وبلجن الاقتصاد.
 3. أعد تشغيل السيرفر.
 4. عدّل `plugins/GawharaEvents/config.yml`.
@@ -115,7 +115,7 @@ mvn clean package
 الملف الناتج:
 
 ```text
-target/GawharaEvents-1.0.1.jar
+target/GawharaEvents-1.0.2.jar
 ```
 
 يوجد GitHub Actions workflow لبناء الـ JAR تلقائيًا عند رفع المشروع.

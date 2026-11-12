@@ -431,7 +431,7 @@ public final class GawharaEvents extends JavaPlugin implements Listener, Command
         activeEvent.meteorEntity = null;
         Location impact = activeEvent.cacheLocation.clone().add(0.5, 0.5, 0.5);
         World world = impact.getWorld();
-        world.spawnParticle(Particle.EXPLOSION_LARGE, impact, 3, 0.5, 0.5, 0.5, 0.0);
+        world.spawnParticle(Particle.EXPLOSION, impact, 3, 0.5, 0.5, 0.5, 0.0);
         world.spawnParticle(Particle.FLAME, impact, 100, 1.2, 0.8, 1.2, 0.04);
         world.playSound(impact, Sound.ENTITY_GENERIC_EXPLODE, 2.0f, 0.7f);
         broadcastRaw("&6&lMETEOR IMPACT! &fThe meteor cache is ready to claim!");
